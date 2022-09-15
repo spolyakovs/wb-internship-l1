@@ -26,7 +26,7 @@ func main() {
 	go handleOutput(squareChan, done)
 
 	wg.Wait()
-	close(squareChan) // ends "range" in row 44
+	close(squareChan) // ends "range" in line 44
 	<-done
 }
 

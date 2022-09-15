@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// very similar to task2
-	// difference only in handleOutput() (added rows 46 and 50, changed row 48)
+	// difference only in handleOutput() (added lines 46 and 50, changed line 48)
 	array := [...]int{2, 4, 6, 8, 10}
 
 	squareChan := make(chan int)
@@ -28,7 +28,7 @@ func main() {
 	go handleOutput(squareChan, doneChan)
 
 	wg.Wait()
-	close(squareChan) // ends "range" in row 44
+	close(squareChan) // ends "range" in line 44
 	<-doneChan
 }
 
