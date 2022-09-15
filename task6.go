@@ -12,7 +12,7 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	dieChan := make(chan struct{}, 1) // buffer not to lock goroutine when its finished
+	dieChan := make(chan bool, 1) // buffer not to lock goroutine when its finished
 	defer close(dieChan)
 
 	wg.Add(1)
@@ -20,7 +20,7 @@ func main() {
 	go goroutineWithChannel(dieChan)
 
 	time.Sleep(time.Second)
-	dieChan <- struct{}{}
+	dieChan <- true
 
 	time.Sleep(time.Second)
 	cancel()
@@ -40,13 +40,13 @@ func goroutineWithContext(ctx context.Context, wg *sync.WaitGroup) {
 	fmt.Println("Finished goroutine with context")
 }
 
-func goroutineWithChannel(die chan struct{}) {
+func goroutineWithChannel(die chan bool) {
 	fmt.Println("Started goroutine with channel")
 
 	<-die // wait for terminate signal
 	// also can use "select" if goroutine working with other channels
 
-	die <- struct{}{} // send signal back that goroutine finished working
+	die <- true // send signal back that goroutine finished working
 	// can also use WaitGroup, like in goroutineWithContext()
 
 	fmt.Println("Finished goroutine with channel")

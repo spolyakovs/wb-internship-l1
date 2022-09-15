@@ -22,14 +22,14 @@ func main() {
 		go getSquare(&wg, elem, squareChan)
 	}
 
-	done := make(chan struct{}) // needed to wait for checkOutput()
+	doneChan := make(chan bool) // needed to wait for checkOutput()
 	// otherwise main() will finish before and last element won't be printed
 
-	go handleOutput(squareChan, done)
+	go handleOutput(squareChan, doneChan)
 
 	wg.Wait()
-	close(squareChan)
-	<-done
+	close(squareChan) // ends "range" in row 44
+	<-doneChan
 }
 
 func getSquare(wg *sync.WaitGroup, v int, squareChan chan<- int) {
@@ -42,11 +42,11 @@ func getSquare(wg *sync.WaitGroup, v int, squareChan chan<- int) {
 	squareChan <- v * v
 }
 
-func handleOutput(squareChan <-chan int, done chan<- struct{}) {
+func handleOutput(squareChan <-chan int, doneChan chan<- bool) {
 	sum := 0
 	for square := range squareChan {
 		sum += square
 	}
 	fmt.Println(sum)
-	done <- struct{}{}
+	doneChan <- true
 }
